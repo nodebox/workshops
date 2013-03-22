@@ -12,6 +12,9 @@ class Blog(models.Model):
     description = models.CharField(max_length=200, help_text='Short about text, eg. "Data Visualization Workshop in Antwerp, 12-16 March 2013."')
     position = models.IntegerField(default=1, unique=True, help_text='Ordering of the blog. Blogs are sorted from low to high, ie. 1 comes first, then 2, 3, etc.')
 
+    def get_absolute_url(self):
+        return '/%s/' % self.slug
+
     def __unicode__(self):
         return self.name
 
@@ -43,10 +46,21 @@ class Entry(models.Model):
     def __unicode__(self):
         return self.title
 
+    def get_absolute_url(self):
+        return '/%s/%s' % (self.blog.slug, self.slug)
+
+    @property
+    def first_image(self):
+        try:
+            return self.asset_set.all()[0]
+        except IndexError:
+            return None
+
     class Meta:
         verbose_name_plural = 'entries'
         db_table = 'blog_entries'
         unique_together = [['blog', 'slug']]
+        ordering = ['-pub_date']
 
 
 ASSET_TYPE_CHOICES = [['image', 'Image'],
@@ -60,6 +74,18 @@ class Asset(models.Model):
     type = models.CharField(max_length=16, choices=ASSET_TYPE_CHOICES)
     description = models.CharField(max_length=200, help_text='Description of the asset.', blank=True)
     position = models.IntegerField(default=1, help_text='Ordering of the asset. Assets are sorted from low to high, ie. 1 comes first, then 2, 3, etc.')
+
+    @property
+    def url(self):
+        return '%s%s/%s' % (settings.MEDIA_URL, self.entry.blog.slug, self.file_name)
+
+    @property
+    def relative_path(self):
+        return '%s/%s' % (self.entry.blog.slug, self.file_name)
+
+    @property
+    def absolute_path(self):
+        return '%s/%s/%s' % (settings.MEDIA_ROOT, self.entry.blog.slug, self.file_name)
 
     class Meta:
         db_table = 'blog_assets'

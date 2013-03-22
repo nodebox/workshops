@@ -1,0 +1,48 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <link rel="stylesheet" href="{% static "css/base.css" %}" type="text/css">
+  <link rel="stylesheet" href="{% static "css/skeleton.css" %}" type="text/css">
+  <link rel="stylesheet" href="{% static "css/blog.css" %}" type="text/css">
+  <link rel="stylesheet" href="{% static "fancybox/jquery.fancybox.css" %}" type="text/css">
+  <script type="text/javascript" src="{% static "js/jquery-1.9.1.min.js" %}"></script>
+  <script type="text/javascript" src="{% static "fancybox/jquery.fancybox.min.js" %} "></script>
+  <script type="text/javascript">
+  $(document).ready(function(){
+    $('.entry-assets a').fancybox();
+  });
+  </script>
+  <title>{% block title %}NodeBox Workshops{% endblock %}</title>
+</head>
+<body>
+<div class="container">
+
+  {% include "shopbar.html" %}
+
+  <div id="header" class="row"><div class="sixteen columns">
+    <h1 id="header-name"><a href="{{ blog.get_absolute_url }}">{{ blog.name }}</a></h1>
+    <hr>
+  </div></div> <!-- #header -->
+
+  <div id="content" class="twelve columns">
+    <h2>{% block page_title %}{% endblock %}</h2>
+    {% block content %}{% endblock %}
+  </div> <!-- #content -->
+
+  <div id="sidebar" class="four columns">
+    <!-- page listing -->
+    <!-- category archive -->
+    <!-- search -->
+  </div> <!-- #sidebar -->
+
+  <div id="footer" class="row">
+    <div class="sixteen columns">
+      <hr>
+      <p>NodeBox Workshop blog &copy; {% now "Y" %} <a href="http://www.emrg.be/">Experimental Media Research Group</a>.</p>
+    </div>
+  </div> <!-- #footer -->
+</div> <!-- .container -->
+</body>
+</html>​

@@ -1,0 +1,87 @@
+@import url(http://workshops.nodebox.net/mt-static/workshop-theme/base.css);
+@import url(http://workshops.nodebox.net/mt-static/workshop-theme/skeleton.css);
+
+/* Shared workshop styles. */
+
+b {
+  font-weight: bold;
+}
+
+.hidden {
+  display: none;
+}
+
+#header {
+  margin-top: 10px;
+  padding-top: 10px;
+}
+
+#header h1 a {
+  text-decoration: none;
+}
+
+.entry-assets img {
+  width: 100%;
+}
+
+.thumb {
+  display: inline-block;
+  vertical-align: top;
+  width: 220px;
+  overflow: hidden;
+  margin-right: 10px;
+  margin-bottom: 2em;
+}
+
+.thumb a {
+  text-decoration: none;
+}
+
+.meta {
+  font-size: 11px;
+  color: #666;
+}
+
+#footer {
+  font-size: 11px;
+  color: #666;
+}
+
+
+
+/* Workshop custom layout */
+
+body {
+  margin-top:28px;
+  border-top: 3px solid #669;
+  background: #f7f7f7 url(http://workshops.nodebox.net/mt-static/workshop-theme/back.png);
+}
+
+.container {
+  background: rgba(255, 255, 255, 0.7);
+}
+
+#header {
+  margin-top: 10px;
+  padding-top: 10px;
+}
+
+#header h1 a {
+  text-decoration: none;
+}
+
+#intro, #intro a {
+  font-size: 16px;
+  font-weight: bold;
+  color: #669;
+}
+
+.thumb img {
+  border-bottom: 3px solid #669;
+}
+
+h5 {
+  font: 12px "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  color: #669;
+  font-weight: bold;
+}

@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% load image_ops %}
+
+{% block content %}
+  <div id="intro" class="row">
+    <div class="sixteen columns">
+      <p>{{ blog.description }} <a href="about.html">Read more</a>.</p>
+    </div>
+  </div>
+
+  {% for entry in entries %}
+    <div id="entry-{{ entry.id }}" class="thumb">
+      <a href="{{ entry.get_absolute_url }}" rel="bookmark">
+        {% if entry.first_image %}
+          <img src="{{ entry.first_image.relative_path|crop:"220x220" }}" width="220" height="220" alt="{{ entry.title }}">
+        {% endif %}
+        <h5>{{ entry.title }}</h5>
+        <p class="meta"><time datetime="{{ entry.pub_date|date:"c" }}">{{ entry.pub_date }}</time></p>
+      </a>
+    </div>
+  {% endfor %}
+{% endblock %}
+
