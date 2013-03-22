@@ -1,6 +1,8 @@
 from datetime import datetime
+import os
 
 from django.db import models
+from django.conf import settings
 from django.contrib.auth.models import User
 
 
@@ -12,6 +14,18 @@ class Blog(models.Model):
 
     def __unicode__(self):
         return self.name
+
+    @property
+    def assets_directory(self):
+        return os.path.join(settings.MEDIA_ROOT, self.slug)
+
+    def ensure_assets_directory(self):
+        """Ensure the directory containing this blogs assets exists."""
+        try:
+            os.makedirs(self.assets_directory)
+        except OSError, e:
+            if e.errno != 17:  # Don't show an error if the directory already exists.
+                raise e
 
     class Meta:
         db_table = 'blog_blogs'
@@ -45,8 +59,8 @@ class Asset(models.Model):
     file_name = models.CharField(max_length=200, help_text='File name of the asset.')
     type = models.CharField(max_length=16, choices=ASSET_TYPE_CHOICES)
     description = models.CharField(max_length=200, help_text='Description of the asset.', blank=True)
-    position = models.IntegerField(default=1, unique=True, help_text='Ordering of the asset. Assets are sorted from low to high, ie. 1 comes first, then 2, 3, etc.')
+    position = models.IntegerField(default=1, help_text='Ordering of the asset. Assets are sorted from low to high, ie. 1 comes first, then 2, 3, etc.')
 
     class Meta:
-        unique_together = [['entry', 'position']]
         db_table = 'blog_assets'
+        ordering = ['position']
