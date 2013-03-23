@@ -15,7 +15,7 @@ class Blog(models.Model):
 
     @property
     def users(self):
-        return User.objects.filter(entry__blog=self, is_superuser=False).distinct()
+        return User.objects.filter(entry__blog=self, is_superuser=False).distinct().order_by('last_name', 'first_name', 'username')
 
     def get_absolute_url(self):
         return '/%s/' % self.slug
