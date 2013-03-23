@@ -4,7 +4,7 @@ from blog.models import Blog, Entry, Asset
 
 
 class BlogAdmin(admin.ModelAdmin):
-    list_display = ['name', 'slug']
+    list_display = ['name', 'slug', 'position']
     prepopulated_fields = {'slug': ['name']}
 
 
