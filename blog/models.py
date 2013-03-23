@@ -80,17 +80,24 @@ class Asset(models.Model):
     description = models.CharField(max_length=200, help_text='Description of the asset.', blank=True)
     position = models.IntegerField(default=1, help_text='Ordering of the asset. Assets are sorted from low to high, ie. 1 comes first, then 2, 3, etc.')
 
+    def __unicode__(self):
+        return self.relative_path
+
+    @property
+    def blog(self):
+        return self.entry.blog
+
     @property
     def url(self):
-        return '%s%s/%s' % (settings.MEDIA_URL, self.entry.blog.slug, self.file_name)
+        return '%s%s/%s' % (settings.MEDIA_URL, self.blog.slug, self.file_name)
 
     @property
     def relative_path(self):
-        return '%s/%s' % (self.entry.blog.slug, self.file_name)
+        return '%s/%s' % (self.blog.slug, self.file_name)
 
     @property
     def absolute_path(self):
-        return '%s/%s/%s' % (settings.MEDIA_ROOT, self.entry.blog.slug, self.file_name)
+        return '%s/%s/%s' % (settings.MEDIA_ROOT, self.blog.slug, self.file_name)
 
     class Meta:
         db_table = 'blog_assets'
