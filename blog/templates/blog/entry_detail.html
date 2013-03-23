@@ -4,7 +4,7 @@
   <h2>{{ entry.title }}</h2>
   <p class="meta">By
     {% if entry.user.first_name or entry.user.last_name %}
-      <span class="author">{{ entry.user.name }}</span>
+      <span class="author">{{ entry.user.first_name }} {{ entry.user.last_name }}</span>
     {% else %}
       <span class="author">{{ entry.user.username }}</span>
     {% endif %}
