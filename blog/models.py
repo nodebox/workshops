@@ -70,7 +70,8 @@ class Entry(models.Model):
 
 ASSET_TYPE_CHOICES = [['image', 'Image'],
                       ['pdf', 'PDF'],
-                      ['zip', 'Zip Archive']]
+                      ['zip', 'Zip Archive'],
+                      ['file', 'Generic File']]
 
 
 class Asset(models.Model):
