@@ -57,7 +57,7 @@ class Entry(models.Model):
     @property
     def first_image(self):
         try:
-            return self.asset_set.all()[0]
+            return self.asset_set.filter(type='image')[0]
         except IndexError:
             return None
 
