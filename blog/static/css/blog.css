@@ -1,6 +1,3 @@
-@import url(http://workshops.nodebox.net/mt-static/workshop-theme/base.css);
-@import url(http://workshops.nodebox.net/mt-static/workshop-theme/skeleton.css);
-
 /* Shared workshop styles. */
 
 b {
@@ -54,7 +51,7 @@ b {
 body {
   margin-top:28px;
   border-top: 3px solid #669;
-  background: #f7f7f7 url(http://workshops.nodebox.net/mt-static/workshop-theme/back.png);
+  background: #f7f7f7 url(../g/back.png);
 }
 
 .container {
