@@ -10,6 +10,7 @@ class Blog(models.Model):
     name = models.CharField(max_length=200, unique=True, help_text='Blog name, eg. "NodeBox Workshop 2013 Antwerp"')
     slug = models.SlugField(unique=True, help_text='Blog URL, eg. "2013-antwerp"')
     description = models.CharField(max_length=200, help_text='Short about text, eg. "Data Visualization Workshop in Antwerp, 12-16 March 2013."')
+    about = models.TextField(help_text='About page for this blog. Use HTML if you like.')
     position = models.IntegerField(default=1, unique=True, help_text='Ordering of the blog. Blogs are sorted from low to high, ie. 1 comes first, then 2, 3, etc.')
 
     def get_absolute_url(self):

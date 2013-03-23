@@ -9,6 +9,11 @@ def redirect_to_latest(request):
     return HttpResponse('helo index')
 
 
+def blog_about(request, blog_slug):
+    blog = get_object_or_404(Blog, slug=blog_slug)
+    return render_to_response('blog/page.html', {'blog': blog, 'title': 'About', 'body': blog.about})
+
+
 def entry_list(request, blog_slug):
     blog = get_object_or_404(Blog, slug=blog_slug)
     entries = blog.entry_set.all()
