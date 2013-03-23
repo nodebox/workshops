@@ -13,6 +13,10 @@ class Blog(models.Model):
     about = models.TextField(help_text='About page for this blog. Use HTML if you like.')
     position = models.IntegerField(default=1, unique=True, help_text='Ordering of the blog. Blogs are sorted from low to high, ie. 1 comes first, then 2, 3, etc.')
 
+    @property
+    def users(self):
+        return User.objects.filter(entry__blog=self, is_superuser=False).distinct()
+
     def get_absolute_url(self):
         return '/%s/' % self.slug
 

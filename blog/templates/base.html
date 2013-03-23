@@ -37,6 +37,20 @@
       <a href="/{{ blog.slug }}/about/">About</a>
     </div>
 
+    <div class="widget users">
+      <h3>Participants</h3>
+      <ul>
+      {% for user in blog.users %}
+        <li><a href="/{{ blog.slug }}/u/{{ user.username }}">
+          {% if user.first_name or user.last_name %}
+            {{ user.first_name }} {{ user.last_name }}
+          {% else %}
+            {{ user.username }}
+          {% endif %}
+        </a></li>
+      {% endfor %}
+      </ul>
+    </div>
   </div> <!-- #sidebar -->
 
   <div id="footer" class="row">
