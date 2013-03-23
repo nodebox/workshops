@@ -1,12 +1,16 @@
 
 from django.http import HttpResponse
-from django.shortcuts import render_to_response, get_object_or_404
+from django.shortcuts import render_to_response, get_object_or_404, redirect
 
 from blog.models import Blog, Entry, Asset
 
 
 def redirect_to_latest(request):
-    return HttpResponse('helo index')
+    blogs = list(Blog.objects.all())
+    if len(blogs) > 0:
+        return redirect(blogs[0])
+    else:
+        return HttpResponse('No blogs yet.')
 
 
 def blog_about(request, blog_slug):
