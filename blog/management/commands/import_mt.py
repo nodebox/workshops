@@ -70,12 +70,11 @@ class Command(BaseCommand):
                 entry = Entry.objects.create(blog=blog,
                                              user=user,
                                              title=row['title'] or '<No Title>',
-                                             slug=row['basename'],
+                                             slug=row['basename'][:50],
                                              pub_date=row['modified_on'],
                                              body=row['body'])
 
             # Create the files.
-            
             asset_cursor = db.cursor()
             asset_cursor.execute('''select a.asset_file_path, a.asset_class 
                                     from mt_asset as a, mt_objectasset as oa
