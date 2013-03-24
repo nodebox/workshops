@@ -1,4 +1,5 @@
 
+from django.contrib.auth.models import User
 from django.http import HttpResponse
 from django.shortcuts import render_to_response, get_object_or_404, redirect
 
@@ -24,7 +25,14 @@ def post_list(request, blog_slug):
     return render_to_response('blog/post_list.html', {'blog': blog, 'posts': posts})
 
 
-def post_detail(request, blog_slug, post_slug):
+def post_list_by_author(request, blog_slug, username):
     blog = get_object_or_404(Blog, slug=blog_slug)
-    post = get_object_or_404(Post, blog__slug=blog_slug, slug=post_slug)
+    user = get_object_or_404(User, username=username)
+    posts = blog.post_set.filter(user=user)
+    return render_to_response('blog/post_list_by_author.html', {'blog': blog, 'author': user, 'posts': posts})
+
+
+def post_detail(request, blog_slug, username, post_slug):
+    blog = get_object_or_404(Blog, slug=blog_slug)
+    post = get_object_or_404(Post, blog__slug=blog_slug, user__username=username, slug=post_slug)
     return render_to_response('blog/post_detail.html', {'blog': blog, 'post': post})

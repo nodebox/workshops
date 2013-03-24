@@ -52,7 +52,7 @@ class Post(models.Model):
         return self.title
 
     def get_absolute_url(self):
-        return '/%s/%s' % (self.blog.slug, self.slug)
+        return '/%s/%s/%s' % (self.blog.slug, self.user.username, self.slug)
 
     @property
     def first_image(self):
