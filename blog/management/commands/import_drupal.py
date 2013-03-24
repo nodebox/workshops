@@ -1,20 +1,17 @@
 from optparse import make_option
-import time
 import os
 import shutil
 from datetime import datetime
 
-from django.core.management.base import BaseCommand, CommandError
-from django.conf import settings
+from django.core.management.base import BaseCommand
 from django.contrib.auth.models import User
-from django.template.defaultfilters import slugify
 import MySQLdb
 
-from blog.models import Blog, Entry, Asset
+from blog.models import Blog, Post, Asset
 
 
 class Command(BaseCommand):
-    help = 'Import blog entries from Drupal'
+    help = 'Import blog posts from Drupal'
     option_list = BaseCommand.option_list + (
         make_option('-d',
                     dest='database',
@@ -49,15 +46,15 @@ class Command(BaseCommand):
             except User.DoesNotExist:
                 user = User.objects.create_user(row['name'], row['email'])
 
-            # Create the blog entry.
+            # Create the blog post.
             self.stdout.write('Create "%s"' % row['title'])
 
-            entry = Entry.objects.create(blog=blog,
-                                         user=user,
-                                         title=row['title'],
-                                         slug=str(row['id']),
-                                         pub_date=datetime.fromtimestamp(row['created']),
-                                         body=row['body'])
+            post = Post.objects.create(blog=blog,
+                                       user=user,
+                                       title=row['title'],
+                                       slug=str(row['id']),
+                                       pub_date=datetime.fromtimestamp(row['created']),
+                                       body=row['body'])
 
             # Create the files.
             file_cursor = drupal_db.cursor()
@@ -71,7 +68,7 @@ class Command(BaseCommand):
                 if os.path.exists(src_file):
                     print src_file, "->", dst_file
                     shutil.copyfile(src_file, dst_file)
-                    Asset.objects.create(entry=entry,
+                    Asset.objects.create(post=post,
                                          file_name=os.path.basename(dst_file),
                                          type='image',
                                          description='',

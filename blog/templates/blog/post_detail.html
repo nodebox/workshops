@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h2>{{ post.title }}</h2>
+  <p class="meta">By
+    {% if post.user.first_name or post.user.last_name %}
+      <span class="author">{{ post.user.first_name }} {{ post.user.last_name }}</span>
+    {% else %}
+      <span class="author">{{ post.user.username }}</span>
+    {% endif %}
+    &mdash;
+    <time datetime="{{ post.pub_date }}">{{ post.pub_date }}</time>
+  </p>
+  <div class="six columns alpha post-assets">
+    {% for asset in post.asset_set.all %}
+      <a href="{{ asset.url }}"><img src="{{ asset.url }}"></a>
+    {% endfor %}
+    &nbsp;
+  </div>
+  <div class="six columns omega post-body">
+    {{ post.body|safe }}
+  </div>
+{% endblock %}

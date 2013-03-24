@@ -1,30 +1,26 @@
 from optparse import make_option
-import time
 import os
 import shutil
-from datetime import datetime
 
-from django.core.management.base import BaseCommand, CommandError
-from django.conf import settings
+from django.core.management.base import BaseCommand
 from django.contrib.auth.models import User
-from django.template.defaultfilters import slugify
 import MySQLdb
 
-from blog.models import Blog, Entry, Asset
+from blog.models import Blog, Post, Asset
 
 MIME_MAPPINGS = {
-  'image/png': 'image',
-  'image/jpeg': 'image',
-  'image/gif': 'image',
-  'video/quicktime': 'movie',
-  'application/zip': 'zip',
-  'application/pdf': 'pdf',
-  'application/octet-stream': 'source'
+    'image/png': 'image',
+    'image/jpeg': 'image',
+    'image/gif': 'image',
+    'video/quicktime': 'movie',
+    'application/zip': 'zip',
+    'application/pdf': 'pdf',
+    'application/octet-stream': 'source'
 }
 
 
 class Command(BaseCommand):
-    help = 'Import blog entries from Wordpress'
+    help = 'Import blog posts from Wordpress'
     option_list = BaseCommand.option_list + (
         make_option('-d',
                     dest='database',
@@ -59,7 +55,6 @@ class Command(BaseCommand):
         for row in list(posts_cursor):
             row = dict(zip(['id', 'post_name', 'post_date', 'title', 'body', 'username', 'first_name', 'email'], row))
 
-
             print "create user %s" % row['username']
             # Ensure the user exists.
             try:
@@ -69,37 +64,37 @@ class Command(BaseCommand):
                 user.first_name = row['first_name']
                 user.save()
 
-            # Create the blog entry.
+            # Create the blog post.
             self.stdout.write('Create "%s"' % row['title'])
 
             try:
-                entry = Entry.objects.get(blog=blog, user=user, slug=row['post_name'])
-            except Entry.DoesNotExist:
-                entry = Entry.objects.create(blog=blog,
-                                             user=user,
-                                             title=row['title'] or '<No Title>',
-                                             slug=row['post_name'][:50],
-                                             pub_date=row['post_date'],
-                                             body=row['body'])
+                post = Post.objects.get(blog=blog, user=user, slug=row['post_name'])
+            except Post.DoesNotExist:
+                post = Post.objects.create(blog=blog,
+                                           user=user,
+                                           title=row['title'] or '<No Title>',
+                                           slug=row['post_name'][:50],
+                                           pub_date=row['post_date'],
+                                           body=row['body'])
 
             # Create the files.
             asset_cursor = db.cursor()
             asset_cursor.execute('''select p.guid, p.post_mime_type
                                     from wp_posts as p
-                                    where p.post_parent = %s 
+                                    where p.post_parent = %s
                                       and p.post_type = 'attachment' ''' % row['id'])
 
             for i, asset in enumerate(list(asset_cursor)):
                 position = i + 1
                 asset = dict(zip(['url', 'mime_type'], asset))
-                src_file =  os.path.join(options['root'], os.path.basename(asset['url']))
+                src_file = os.path.join(options['root'], os.path.basename(asset['url']))
                 print src_file
                 dst_file = os.path.join(blog.assets_directory, os.path.basename(asset['url']))
 
                 if os.path.exists(src_file):
                     print src_file, "->", dst_file
                     shutil.copyfile(src_file, dst_file)
-                    Asset.objects.create(entry=entry,
+                    Asset.objects.create(post=post,
                                          file_name=os.path.basename(dst_file),
                                          type=MIME_MAPPINGS.get(asset['mime_type'], 'file'),
                                          description='',

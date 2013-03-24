@@ -1,20 +1,16 @@
 from optparse import make_option
-import time
 import os
 import shutil
-from datetime import datetime
 
-from django.core.management.base import BaseCommand, CommandError
-from django.conf import settings
+from django.core.management.base import BaseCommand
 from django.contrib.auth.models import User
-from django.template.defaultfilters import slugify
 import MySQLdb
 
-from blog.models import Blog, Entry, Asset
+from blog.models import Blog, Post, Asset
 
 
 class Command(BaseCommand):
-    help = 'Import blog entries from Movable Type'
+    help = 'Import blog posts from Movable Type'
     option_list = BaseCommand.option_list + (
         make_option('-d',
                     dest='database',
@@ -51,7 +47,6 @@ class Command(BaseCommand):
         for row in list(entry_cursor):
             row = dict(zip(['id', 'basename', 'modified_on', 'title', 'body', 'username', 'email', 'first_name'], row))
 
-
             print "create user %s" % row['username']
             # Ensure the user exists.
             try:
@@ -61,25 +56,25 @@ class Command(BaseCommand):
                 user.first_name = row['first_name']
                 user.save()
 
-            # Create the blog entry.
+            # Create the blog post.
             self.stdout.write('Create "%s"' % row['title'])
 
             try:
-                entry = Entry.objects.get(blog=blog, user=user, slug=row['basename'])
-            except Entry.DoesNotExist:
-                entry = Entry.objects.create(blog=blog,
-                                             user=user,
-                                             title=row['title'] or '<No Title>',
-                                             slug=row['basename'][:50],
-                                             pub_date=row['modified_on'],
-                                             body=row['body'])
+                post = Post.objects.get(blog=blog, user=user, slug=row['basename'])
+            except Post.DoesNotExist:
+                post = Post.objects.create(blog=blog,
+                                           user=user,
+                                           title=row['title'] or '<No Title>',
+                                           slug=row['basename'][:50],
+                                           pub_date=row['modified_on'],
+                                           body=row['body'])
 
             # Create the files.
             asset_cursor = db.cursor()
-            asset_cursor.execute('''select a.asset_file_path, a.asset_class 
+            asset_cursor.execute('''select a.asset_file_path, a.asset_class
                                     from mt_asset as a, mt_objectasset as oa
-                                    where oa.objectasset_object_id = %s 
-                                      and oa.objectasset_blog_id = %s 
+                                    where oa.objectasset_object_id = %s
+                                      and oa.objectasset_blog_id = %s
                                       and a.asset_id = oa.objectasset_asset_id''' % (row['id'], options['src_blog_id']))
 
             for i, asset in enumerate(list(asset_cursor)):
@@ -92,7 +87,7 @@ class Command(BaseCommand):
                 if os.path.exists(src_file):
                     print src_file, "->", dst_file
                     shutil.copyfile(src_file, dst_file)
-                    Asset.objects.create(entry=entry,
+                    Asset.objects.create(post=post,
                                          file_name=os.path.basename(dst_file),
                                          type=asset['asset_class'],
                                          description='',

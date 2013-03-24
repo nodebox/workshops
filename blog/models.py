@@ -15,7 +15,7 @@ class Blog(models.Model):
 
     @property
     def users(self):
-        return User.objects.filter(entry__blog=self, is_superuser=False).distinct().order_by('last_name', 'first_name', 'username')
+        return User.objects.filter(post__blog=self, is_superuser=False).distinct().order_by('last_name', 'first_name', 'username')
 
     def get_absolute_url(self):
         return '/%s/' % self.slug
@@ -40,7 +40,7 @@ class Blog(models.Model):
         ordering = ['position']
 
 
-class Entry(models.Model):
+class Post(models.Model):
     blog = models.ForeignKey(Blog)
     user = models.ForeignKey(User)
     title = models.CharField(max_length=200, help_text='Title of the blog post.')
@@ -62,8 +62,8 @@ class Entry(models.Model):
             return None
 
     class Meta:
-        verbose_name_plural = 'entries'
-        db_table = 'blog_entries'
+        verbose_name_plural = 'posts'
+        db_table = 'blog_posts'
         unique_together = [['blog', 'slug']]
         ordering = ['-pub_date']
 
@@ -75,7 +75,7 @@ ASSET_TYPE_CHOICES = [['image', 'Image'],
 
 
 class Asset(models.Model):
-    entry = models.ForeignKey(Entry)
+    post = models.ForeignKey(Post)
     file_name = models.CharField(max_length=200, help_text='File name of the asset.')
     type = models.CharField(max_length=16, choices=ASSET_TYPE_CHOICES)
     description = models.CharField(max_length=200, help_text='Description of the asset.', blank=True)
@@ -86,7 +86,7 @@ class Asset(models.Model):
 
     @property
     def blog(self):
-        return self.entry.blog
+        return self.post.blog
 
     @property
     def url(self):

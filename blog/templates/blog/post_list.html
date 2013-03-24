@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% load image_ops %}
+
+{% block content %}
+  <div id="intro" class="row">
+    <div class="sixteen columns alpha omega">
+      <p>{{ blog.description }} <a href="/{{ blog.slug }}/about/">Read more</a>.</p>
+    </div>
+  </div>
+
+  {% for post in posts %}
+    <div id="post-{{ post.id }}" class="thumb">
+      <a href="{{ post.get_absolute_url }}" rel="bookmark">
+        {% if post.first_image %}
+          <img src="{{ post.first_image.relative_path|crop:"220x220" }}" width="220" height="220" alt="{{ post.title }}">
+        {% else %}
+          <img src="{% static "g/blank.png" %}" width="220" height="220" alt="{{ post.title }}">
+        {% endif %}
+        <h5>{{ post.title }}</h5>
+        <p class="meta"><time datetime="{{ post.pub_date|date:"c" }}">{{ post.pub_date }}</time></p>
+      </a>
+    </div>
+  {% endfor %}
+{% endblock %}
+
