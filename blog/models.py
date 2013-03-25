@@ -37,7 +37,7 @@ class Blog(models.Model):
 
     class Meta:
         db_table = 'blog_blogs'
-        ordering = ['position']
+        ordering = ['-position']
 
 
 class Post(models.Model):
