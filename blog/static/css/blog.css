@@ -86,3 +86,17 @@ h5 {
 .widget {
   margin-bottom: 20px;
 }
+
+.errorlist li {
+  font-weight: bold;
+  color: red;
+}
+
+.post-form input[type="text"] {
+    width: 500px;
+}
+
+.post-form textarea {
+  width: 500px;
+  height: 200px;
+}

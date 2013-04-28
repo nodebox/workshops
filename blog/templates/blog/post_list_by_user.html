@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <div id="intro" class="row">
+    <div class="sixteen columns alpha omega">
+      <p>Posts by {{ user.first_name }} {{ user.last_name }}</p>
+    </div>
+  </div>
+
+  <a class="btn" href="/posts/new/">New</a>
+  
+  <ul>
+  {% for post in posts %}
+    <li>
+      <a href="{{ post.get_absolute_url }}" rel="bookmark">
+        {{ post.title }}
+      </a>
+    </li>
+  {% endfor %}
+  </ul>
+{% endblock %}
+
