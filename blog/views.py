@@ -1,3 +1,6 @@
+import os
+
+from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django import forms
@@ -6,7 +9,7 @@ from django.shortcuts import render_to_response, get_object_or_404, redirect
 from django.template import RequestContext
 from django.utils.text import slugify
 
-from blog.models import Blog, Post
+from blog.models import Blog, Post, Asset
 
 
 def redirect_to_latest(request):
@@ -51,6 +54,9 @@ def post_list_by_user(request):
 class PostForm(forms.Form):
     title = forms.CharField(max_length=100)
     body = forms.CharField(widget=forms.Textarea)
+    image_1 = forms.FileField(required=False)
+    image_2 = forms.FileField(required=False)
+    image_3 = forms.FileField(required=False)
 
 
 @login_required
@@ -65,6 +71,9 @@ def post_create(request):
                         slug=slugify(form.cleaned_data['title']),
                         body=form.cleaned_data['body'])
             post.save()
+            _handle_upload(post, request.FILES.get('image_1'), 1)
+            _handle_upload(post, request.FILES.get('image_2'), 2)
+            _handle_upload(post, request.FILES.get('image_3'), 3)
             return redirect(post)
     else:
         form = PostForm()
@@ -73,5 +82,37 @@ def post_create(request):
                               {'user': request.user, 'blog': blog, 'form': form}, context_instance=RequestContext(request))
 
 
+def _handle_upload(post, f, position=1):
+    if f is not None:
+        target_path = _unique_filename(post, f)
+        with open(target_path, 'wb+') as target_file:
+            for chunk in f.chunks():
+                target_file.write(chunk)
+        asset = Asset(post=post,
+                      file_name=os.path.basename(target_path),
+                      type='image',
+                      position=position)
+        asset.save()
+        return asset
 
 
+def _ensure_media_directory(post):
+    dir = os.path.join(settings.MEDIA_ROOT, post.blog.slug)
+    if not os.path.exists(dir):
+        os.makedirs(dir)
+
+
+def _unique_filename(post, f):
+    full_path = _full_path(post, f.name)
+    if not os.path.exists(full_path):
+        return full_path
+    else:
+        filename, ext = os.path.splitext(f.name)
+        for i in range(1, 100):
+            full_path = _full_path(post, '%s_%s%s' % (filename, i, ext))
+            if not os.path.exists(full_path):
+                return full_path
+
+
+def _full_path(post, filename):
+    return '%s/%s/%s' % (settings.MEDIA_ROOT, post.blog.slug, filename)

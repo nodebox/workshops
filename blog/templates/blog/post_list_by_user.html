@@ -7,8 +7,8 @@
     </div>
   </div>
 
-  <a class="btn" href="/posts/new/">New</a>
-  
+  <a class="button" href="/posts/new/">New Post</a>
+  <h4>Posts</h4>
   <ul>
   {% for post in posts %}
     <li>
@@ -16,7 +16,8 @@
         {{ post.title }}
       </a>
     </li>
+  {% empty %}
+    <p><em>No posts yet.</em></p>
   {% endfor %}
   </ul>
 {% endblock %}
-
