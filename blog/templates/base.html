@@ -32,6 +32,7 @@
   </div> <!-- #content -->
 
   <div id="sidebar" class="four columns">
+    {% block sidebar %}
     <div class="widget pages">
       <h3>Pages</h3>
       <a href="/{{ blog.slug }}/about/">About</a>
@@ -51,6 +52,7 @@
       {% endfor %}
       </ul>
     </div>
+    {% endblock sidebar %}
   </div> <!-- #sidebar -->
 
   <div id="footer" class="row">

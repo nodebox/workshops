@@ -100,3 +100,8 @@ h5 {
   width: 500px;
   height: 200px;
 }
+
+pre {
+  font-family: monospace;
+  font-size: 11px;
+}

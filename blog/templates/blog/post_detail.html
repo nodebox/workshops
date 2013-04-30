@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load markup %}
 
 {% block content %}
   <h2>{{ post.title }}</h2>
@@ -18,6 +19,6 @@
     &nbsp;
   </div>
   <div class="six columns omega post-body">
-    {{ post.body|safe }}
+    {{ post.body|markdown }}
   </div>
 {% endblock %}
