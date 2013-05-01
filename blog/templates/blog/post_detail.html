@@ -15,7 +15,7 @@
   </p>
   <div class="six columns alpha post-assets">
     {% for asset in post.asset_set.all %}
-      <a href="{{ asset.url }}"><img src="{{ asset.relative_path|scale:"420x840" }}"></a>
+      <a href="{{ asset.url }}" rel="asset"><img src="{{ asset.relative_path|scale:"420x840" }}"></a>
     {% endfor %}
     &nbsp;
   </div>
