@@ -61,6 +61,14 @@ class Post(models.Model):
         except IndexError:
             return None
 
+    @property
+    def images(self):
+        return self.asset_set.filter(type='image')
+
+    @property
+    def files(self):
+        return self.asset_set.exclude(type='image')
+
     class Meta:
         verbose_name_plural = 'posts'
         db_table = 'blog_posts'
@@ -73,6 +81,15 @@ ASSET_TYPE_CHOICES = [['image', 'Image'],
                       ['zip', 'Zip Archive'],
                       ['file', 'Generic File']]
 
+ASSET_EXTENSIONS = {
+    'png': 'image',
+    'jpg': 'image',
+    'jpeg': 'image',
+    'gif': 'image',
+    'pdf': 'pdf',
+    'zip': 'zip'
+}
+
 
 class Asset(models.Model):
     post = models.ForeignKey(Post)
@@ -80,6 +97,13 @@ class Asset(models.Model):
     type = models.CharField(max_length=16, choices=ASSET_TYPE_CHOICES)
     description = models.CharField(max_length=200, help_text='Description of the asset.', blank=True)
     position = models.IntegerField(default=1, help_text='Ordering of the asset. Assets are sorted from low to high, ie. 1 comes first, then 2, 3, etc.')
+
+    @staticmethod
+    def type_for_extension(extension):
+        if extension.startswith('.'):
+            extension = extension[1:]
+        extension = extension.lower()
+        return ASSET_EXTENSIONS.get(extension, 'file')
 
     def __unicode__(self):
         return self.relative_path

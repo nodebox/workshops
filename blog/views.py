@@ -88,9 +88,10 @@ def _handle_upload(post, f, position=1):
         with open(target_path, 'wb+') as target_file:
             for chunk in f.chunks():
                 target_file.write(chunk)
+        extension = os.path.splitext(target_path)[1]
         asset = Asset(post=post,
                       file_name=os.path.basename(target_path),
-                      type='image',
+                      type=Asset.type_for_extension(extension),
                       position=position)
         asset.save()
         return asset

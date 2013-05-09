@@ -20,6 +20,8 @@ class PostAdmin(admin.ModelAdmin):
 class AssetAdmin(admin.ModelAdmin):
     list_display = ['blog', 'post', 'file_name']
     list_display_links = ['file_name']
+    list_filter = ['type']
+    search_fields = ['file_name', 'post__title']
 
 
 admin.site.register(Blog, BlogAdmin)

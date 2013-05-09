@@ -14,8 +14,11 @@
     <time datetime="{{ post.pub_date }}">{{ post.pub_date }}</time>
   </p>
   <div class="six columns alpha post-assets">
-    {% for asset in post.asset_set.all %}
+    {% for asset in post.images %}
       <a href="{{ asset.url }}" rel="asset"><img src="{{ asset.relative_path|scale:"420x840" }}"></a>
+    {% endfor %}
+    {% for asset in post.files %}
+      <a href="{{ asset.url }}" rel="asset">{{ asset.file_name }}</a>
     {% endfor %}
     &nbsp;
   </div>
