@@ -23,15 +23,18 @@ def resize(relative_path, size, method):
     relative_resized_path = resized_path(relative_path, size, method)
     resized_file = os.path.join(settings.MEDIA_ROOT, relative_resized_path)
     relative_url = os.path.join(settings.MEDIA_URL, relative_resized_path)
-    if os.path.exists(resized_file):
-        return relative_url
-
-    image = Image.open(image_file)
-    if image.mode != 'RGB':
-        image = image.convert('RGB')
-
+   
     # Parse size string 'WIDTHxHEIGHT'
     width, height = [int(i) for i in size.split('x')]
+   
+    if os.path.exists(resized_file):
+        return relative_url
+    try:
+        image = Image.open(image_file)
+    except:
+        return settings.STATIC_URL + 'g/blank.png'
+    if image.mode != 'RGB':
+        image = image.convert('RGB')
 
     # use PIL methods to edit images
     if method == 'scale':
