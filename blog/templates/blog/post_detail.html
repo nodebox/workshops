@@ -3,7 +3,7 @@
 {% load markup %}
 
 {% block content %}
-  <h2>{{ post.title }}</h2>
+  <h2>{{ post.title }}</h2>{% if is_post_owner %}<a href="edit/">(edit)</a>{% endif %}
   <p class="meta">By
     {% if post.user.first_name or post.user.last_name %}
       <span class="author">{{ post.user.first_name }} {{ post.user.last_name }}</span>

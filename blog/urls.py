@@ -9,5 +9,6 @@ urlpatterns = patterns('',
     url(r'^(?P<blog_slug>[\w-]+)/$', views.post_list, name='post_list'),
     url(r'^(?P<blog_slug>[\w-]+)/about/$', views.blog_about, name='blog_about'),
     url(r'^(?P<blog_slug>[\w-]+)/(?P<username>[\w-]+)/$', views.post_list_by_author, name='post_list_by_author'),
-    url(r'^(?P<blog_slug>[\w-]+)/(?P<username>[\w-]+)/(?P<post_slug>[\w-]+)/$', views.post_detail, name='post_detail')
+    url(r'^(?P<blog_slug>[\w-]+)/(?P<username>[\w-]+)/(?P<post_slug>[\w-]+)/$', views.post_detail, name='post_detail'),
+    url(r'^(?P<blog_slug>[\w-]+)/(?P<username>[\w-]+)/(?P<post_slug>[\w-]+)/edit/$', views.post_edit, name='post_edit')
 )

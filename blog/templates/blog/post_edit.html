@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% load image_ops %}
+
+{% block content %}
+  <div id="intro" class="row">
+      <div class="sixteen columns alpha omega">
+        <h3>{{ form.title.value }}</h3>
+        <h4>Edit Post:</h4>
+      </div>
+    </div>
+
+  <div class="post-form" id="drop-area">
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      <b>Title:</b>
+      {{ form.title }}
+      <b>Body:</b>
+      {{ form.body }}
+      <br><br>
+	  <div class="six columns alpha post-assets">
+	    {% for asset in post.images %}
+	      <a href="{{ asset.url }}" rel="asset"><img src="{{ asset.relative_path|scale:"420x840" }}"></a>
+	      <p>Delete: <input type="checkbox" name="asset-{{asset.id}}"/></p>
+	    {% endfor %}
+	    {% for asset in post.files %}
+	      <a href="{{ asset.url }}" rel="asset">{{ asset.file_name }}</a>
+	      <p>Delete: <input type="checkbox" name="asset-{{asset.id}}"/></p>
+	    {% endfor %}
+	  <p><b>Add images:</b></p>
+      <p><b>Image 1:</b> {{ form.image_1 }}</p>
+      <p><b>Image 2:</b> {{ form.image_2 }}</p>
+      <p><b>Image 3:</b> {{ form.image_3 }}</p>
+      <div><input type="submit" value="Update Post"/></div>
+	  </div>
+    </form>
+  </div>
+{% endblock %}
+
+{% block sidebar %}
+  <p>Text is styled using <a href="http://daringfireball.net/projects/markdown/syntax">Markdown</a>.</p>
+  <h2>Headers</h2>
+  <pre>
+    # Header 1
+    ## Header 2
+    ### Header 3
+  </pre>
+  <h2>Bold / Italic</h2>
+  <pre>
+    <strong>**Bold**</strong> text
+    <em>*Italic*</em> text
+  </pre>
+  <h2>Links</h2>
+  <pre>
+    Visit [Google](https://www.google.com).
+  </pre>
+
+
+{% endblock %}

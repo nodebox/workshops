@@ -41,7 +41,8 @@ def post_list_by_author(request, blog_slug, username):
 def post_detail(request, blog_slug, username, post_slug):
     blog = get_object_or_404(Blog, slug=blog_slug)
     post = get_object_or_404(Post, blog__slug=blog_slug, user__username=username, slug=post_slug)
-    return render_to_response('blog/post_detail.html', {'blog': blog, 'post': post})
+    is_post_owner = request.user.is_staff or request.user == User.objects.get(username=username)
+    return render_to_response('blog/post_detail.html', {'blog': blog, 'post': post, 'is_post_owner': is_post_owner})
 
 
 @login_required
@@ -61,7 +62,8 @@ class PostForm(forms.Form):
 
 @login_required
 def post_create(request):
-    blog = Blog.objects.get(slug='2013-montreal')
+    if not Blog.objects.exists(): return HttpResponse('No blogs yet.')
+    blog = Blog.objects.all()[0]
     if request.method == 'POST':
         form = PostForm(request.POST)
         if form.is_valid():
@@ -81,9 +83,36 @@ def post_create(request):
     return render_to_response('blog/post_create.html',
                               {'user': request.user, 'blog': blog, 'form': form}, context_instance=RequestContext(request))
 
+@login_required
+def post_edit(request, blog_slug, username, post_slug):
+    blog = get_object_or_404(Blog, slug=blog_slug)
+    post = get_object_or_404(Post, blog__slug=blog_slug, user__username=username, slug=post_slug)
+    is_post_owner = request.user.is_staff or request.user == User.objects.get(username=username)
+    if not is_post_owner: return HttpResponse('You are not allowed to edit this post.')
+    
+    if request.method == 'POST':
+        form = PostForm(request.POST)
+        if form.is_valid():
+            post.title = form.cleaned_data["title"]
+            post.body = form.cleaned_data["body"]
+            post.save()
+            for asset in post.asset_set.all():
+                if request.POST.has_key("asset-%s" % asset.id):
+                    asset.delete()
+            _handle_upload(post, request.FILES.get('image_1'), 1)
+            _handle_upload(post, request.FILES.get('image_2'), 2)
+            _handle_upload(post, request.FILES.get('image_3'), 3)
+            return redirect(post)
+    else:
+        form = PostForm({"title": post.title, "body": post.body})
+    
+    return render_to_response('blog/post_edit.html',
+                              {'user': request.user, 'blog': blog, 'post': post, 'form': form}, context_instance=RequestContext(request))
+    
 
 def _handle_upload(post, f, position=1):
     if f is not None:
+        _ensure_media_directory(post)
         target_path = _unique_filename(post, f)
         with open(target_path, 'wb+') as target_file:
             for chunk in f.chunks():
