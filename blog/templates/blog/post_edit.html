@@ -16,10 +16,10 @@
       {{ form.title }}
       <label for="id_body">Body:</label>
       {{ form.body }}
-      <br><br>
-	  <div class="six columns alpha post-assets">
+	  <div class="six columns alpha ">
+    	  <p><b>Currently uploaded assets for this post:</b></p>
 	    {% for asset in post.images %}
-	      <a href="{{ asset.url }}" rel="asset"><img src="{{ asset.relative_path|scale:"420x840" }}"></a>
+	      <a href="{{ asset.url }}" rel="asset"><img src="{{ asset.relative_path|scale:"420x840" }}" width="160"></a>
 	      <p>Delete: <input type="checkbox" name="asset-{{asset.id}}"/></p>
 	    {% endfor %}
 	    {% for asset in post.files %}
