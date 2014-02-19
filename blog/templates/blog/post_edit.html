@@ -12,9 +12,9 @@
   <div class="post-form" id="drop-area">
     <form method="post" enctype="multipart/form-data">
       {% csrf_token %}
-      <b>Title:</b>
+      <label for="id_title">Title:</label>
       {{ form.title }}
-      <b>Body:</b>
+      <label for="id_body">Body:</label>
       {{ form.body }}
       <br><br>
 	  <div class="six columns alpha post-assets">
@@ -24,12 +24,12 @@
 	    {% endfor %}
 	    {% for asset in post.files %}
 	      <a href="{{ asset.url }}" rel="asset">{{ asset.file_name }}</a>
-	      <p>Delete: <input type="checkbox" name="asset-{{asset.id}}"/></p>
+	      <p><label for="id_asset_{{ asset.id }}">Delete:</label> <input type="checkbox" name="asset-{{ asset.id }}" id="id_asset_{{ asset.id }}"/></p>
 	    {% endfor %}
-	  <p><b>Add images:</b></p>
-      <p><b>Image 1:</b> {{ form.image_1 }}</p>
-      <p><b>Image 2:</b> {{ form.image_2 }}</p>
-      <p><b>Image 3:</b> {{ form.image_3 }}</p>
+	  <p><b>Upload images or other files:</b></p>
+      <p><label for="id_image_1">Image 1:</label> {{ form.image_1 }}</p>
+      <p><label for="id_image_1">Image 2:</label> {{ form.image_2 }}</p>
+      <p><label for="id_image_1">Image 3:</label> {{ form.image_3 }}</p>
       <div><input type="submit" value="Update Post"/></div>
 	  </div>
     </form>
